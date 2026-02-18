@@ -86,5 +86,5 @@ Implement JWT Authentication for secure connections.
 
 Created by Krishnkant Malviya
 
-![Screenshot 2026-02-18 112148.png](../../OneDrive/Pictures/Screenshots%201/Screenshot%202026-02-18%20112148.png)
-![Screenshot 2026-02-18 112203.png](../../OneDrive/Pictures/Screenshots%201/Screenshot%202026-02-18%20112203.png)
+![Dashboard Screenshot](./screenshots/chat-dashboard.png)
+![Dashboard Screenshot](./screenshots/rabbitMQ-dashboard.png)
