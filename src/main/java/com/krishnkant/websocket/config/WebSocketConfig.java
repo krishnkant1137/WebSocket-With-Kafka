@@ -1,5 +1,6 @@
 package com.krishnkant.websocket.config;
 
+import com.krishnkant.websocket.util.WebSocketConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,24 +11,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
-    }
+        @Override
+        public void registerStompEndpoints(StompEndpointRegistry registry) {
+            registry.addEndpoint(WebSocketConstants.ENDPOINT_WS)
+                    .setAllowedOriginPatterns("*")
+                    .withSockJS();
+        }
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        @Override
+        public void configureMessageBroker(MessageBrokerRegistry registry) {
+            registry.setApplicationDestinationPrefixes(WebSocketConstants.APP_PREFIX);
 
-        registry.setApplicationDestinationPrefixes("/app");
-
-        registry.enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost")  // abhi hard coded hai
-                // production me change-  application.properties using @Value
-                // Example: .setRelayHost(rabbitMqHost)
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
-    }
+            // Yahan change hai: Relay hata diya, simple broker use karenge
+            // Kyunki hum Kafka se data le kar manually '/topic' pe bhejenge
+            registry.enableSimpleBroker("/topic");
+        }
 }
