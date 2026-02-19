@@ -1,90 +1,190 @@
-# 🚀 Real-Time Scalable Chat Application
+🚀 Apache Kafka Learning & Implementation (1-Day Intensive Study)
+📌 Objective
 
-## 📌 Introduction & Purpose
-This project is a **Real-Time Chat Application** built using **Spring Boot** and **WebSockets**.
+The objective of this task was:
 
-Unlike traditional HTTP requests where the client has to keep asking the server for new messages (Polling), this application uses **WebSockets** to create a persistent, two-way connection. This ensures that messages are delivered instantly with minimal latency.
+To understand Apache Kafka from basics
 
-To make the application **Production-Ready and Scalable**, I have integrated **RabbitMQ** as an external message broker instead of using the default in-memory broker.
+To implement Kafka using Spring Boot
 
----
+To understand Kafka architecture (Producer, Consumer, Topic, Partition, Offset)
 
-## 🛠 Tech Stack
-* **Backend:** Java, Spring Boot (WebSocket Starter)
-* **Message Broker:** RabbitMQ (with STOMP Plugin enabled)
-* **Protocol:** STOMP (Simple Text Oriented Messaging Protocol)
-* **Frontend:** HTML, JavaScript, SockJS, Stomp.js
-* **Build Tool:** Maven
+To integrate Kafka with WebSocket for real-time communication
 
----
+To prepare for production-level understanding
 
-## 🧠 R&D: Why RabbitMQ? (Architecture Decision)
+🧠 Phase 1 – Kafka Fundamentals Learned
+1️⃣ What is Apache Kafka?
 
-During the development, I explored two approaches for message routing:
+Apache Kafka is a distributed event streaming platform used to build real-time data pipelines and streaming applications.
 
-### 1. In-Memory Broker (SimpleBroker) - *The Initial Approach*
-* **How it works:** Messages are stored in the Java application's RAM (JVM Heap).
-* **Problem:** It works fine for a single server. However, if we scale the application (e.g., run it on 2 servers), User A connected to Server 1 cannot chat with User B connected to Server 2. The messages get lost because servers don't share memory.
+It allows:
 
-### 2. External Broker (RabbitMQ) - *The Chosen Approach* * **How it works:** I used `enableStompBrokerRelay`. The Spring Boot app acts as a gateway. It takes the message and pushes it to the **RabbitMQ Server**.
-* **Benefit:** RabbitMQ handles the routing. Even if we have 100 Spring Boot servers, they all talk to the same RabbitMQ instance, ensuring **Data Consistency and Scalability**.
-* **Decoupling:** The chat system is now loosely coupled. The server is not burdened with holding messages in RAM.
+Producers to send messages
 
----
+Brokers to store messages
 
-## ⚙️ Implementation Details
+Consumers to read messages
 
-### 1. WebSocket Configuration
-I configured the `WebSocketMessageBrokerConfigurer` to set up the connection endpoints.
-* **Endpoint:** `/ws` (with SockJS fallback for older browsers).
-* **Broker Relay:** Configured to connect to RabbitMQ on port `61613` (STOMP port).
+Scalable and fault-tolerant communication
 
-### 2. Session Management (User Join/Leave)
-One challenge was detecting when a user closes the browser tab.
-* **Solution:** I used `WebSocketEventListener`.
-* **On Join:** I store the `username` in the WebSocket **Session Attributes** (Server's temporary memory).
-* **On Disconnect:** The event listener triggers, retrieves the username from the session, and broadcasts a `LEAVE` message to all active users.
+2️⃣ Why Kafka?
 
-### 3. Frontend Logic
-Used **SockJS** and **Stomp.js** to establish the connection. The UI handles dynamic message bubbles (Green for me, White for others).
+Traditional REST communication is synchronous and tightly coupled.
 
----
+Kafka enables:
 
-## 🚀 How to Run Locally
+Asynchronous communication
 
-### Step 1: Start RabbitMQ
-You need RabbitMQ running with the STOMP plugin enabled.
-If using Docker, run:
-```bash
-docker run -d --name rabbitmq-server -p 5672:5672 -p 15672:15672 -p 61613:61613 rabbitmq:3-management
-docker exec -it rabbitmq-server rabbitmq-plugins enable rabbitmq_stomp
+Loose coupling between services
 
-(Or install manually on Windows and enable the plugin).
+High throughput
 
-Step 2: Run Spring Boot App
-Clone the repository and run the application:
+Scalability
 
-Bash
-mvn spring-boot:run
-Step 3: Open the Chat
-Open your browser and navigate to:
-http://localhost:8080
+3️⃣ Core Concepts Learned
+🔹 Producer
 
-Open the URL in two different tabs (or Incognito mode) to simulate two users chatting.
+Sends messages to Kafka topic.
 
-📊 Proof of Concept (Results)
-RabbitMQ Dashboard: Shows active connections and message spikes in the graph.
+🔹 Consumer
 
-Console Logs: Shows "User Joined" and "User Disconnected" events successfully.
+Reads messages from Kafka topic.
 
-🔮 Future Improvements
-Implement Database Storage (MySQL/MongoDB) to save chat history.
+🔹 Broker
 
-Add Private 1-to-1 Chat logic.
+Kafka server that stores data.
 
-Implement JWT Authentication for secure connections.
+🔹 Topic
 
-Created by Krishnkant Malviya
+Category where messages are stored.
 
-![Dashboard Screenshot](./screenshots/chat-dashboard.png)
-![Dashboard Screenshot](./screenshots/rabbitMQ-dashboard.png)
+🔹 Partition
+
+Divides topic into multiple lanes for parallel processing.
+
+🔹 Offset
+
+Unique position number of message inside a partition.
+
+🔹 Consumer Group
+
+Multiple consumers sharing load of partitions.
+
+🏗 Kafka Architecture Understanding
+
+Message Flow:
+
+Producer → Topic → Partition → Consumer
+Offset tracks how much data consumer has processed.
+
+Partition enables horizontal scalability.
+
+Ordering is maintained within a partition.
+
+⚙️ Phase 2 – Local Setup Steps
+Step 1 – Installed Kafka (KRaft Mode)
+
+Downloaded Kafka binary
+
+Formatted storage
+
+Started Kafka broker
+
+Step 2 – Created Topic
+
+Command used:
+
+kafka-topics.bat --create --topic test-topic --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+Step 3 – Tested Using CLI
+
+Used console producer
+
+Used console consumer
+
+Verified message flow
+
+💻 Phase 3 – Spring Boot Implementation
+Dependency Added
+spring-kafka
+
+application.yml Configuration
+spring:
+kafka:
+bootstrap-servers: localhost:9092
+consumer:
+group-id: my-group
+auto-offset-reset: earliest
+
+Kafka Producer Implementation
+
+Used KafkaTemplate to send messages to topic.
+
+Kafka Consumer Implementation
+
+Used @KafkaListener to consume messages.
+
+🔄 Phase 4 – Kafka + WebSocket Integration
+
+Architecture:
+
+Producer → Kafka → Consumer → WebSocket → Client Browser
+
+Kafka handles backend communication.
+WebSocket pushes real-time updates to UI.
+
+Use Case Implemented:
+Real-time message broadcasting system.
+
+🧪 Key Learnings
+
+Kafka is asynchronous
+
+Partition enables parallel processing
+
+Offset tracks message consumption
+
+Consumer group balances load
+
+Kafka is better than REST for event-driven systems
+
+WebSocket is used for client communication
+
+Kafka is used for service-to-service communication
+
+📈 Real-World Use Cases Studied
+
+Order processing system
+
+Real-time stock updates
+
+Chat systems
+
+Notification services
+
+Microservices communication
+
+⚠️ Challenges Faced
+
+Understanding partition vs consumer
+
+Understanding offset mechanism
+
+Kafka setup configuration
+
+Consumer group behaviour
+
+🎯 Conclusion
+
+Through this implementation, I gained:
+
+Strong understanding of Kafka fundamentals
+
+Practical experience with Spring Boot Kafka
+
+Real-time integration using WebSocket
+
+Production-level architectural understanding
+
+Kafka is suitable for scalable, event-driven systems and high-throughput messaging scenarios.
