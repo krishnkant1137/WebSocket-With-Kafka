@@ -25,5 +25,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             // Yahan change hai: Relay hata diya, simple broker use karenge
             // Kyunki hum Kafka se data le kar manually '/topic' pe bhejenge
             registry.enableSimpleBroker("/topic");
+//            registry.enableSimpleBroker("/queue"); /queue usually point-to-point pattern ke liye hota hai.
         }
 }

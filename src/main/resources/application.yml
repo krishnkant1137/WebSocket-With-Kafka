@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+#      // kafka broker kaha run hora hai
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      // 👉 Object ko bytes me convert karta hai
+#  👉 Is process ko serialization kehte hain
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    consumer:
+      group-id: demo-group
+      auto-offset-reset: earliest #Agar offset nahi mila to:Shuru se message read karo
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
